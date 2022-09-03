@@ -1,25 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css"
+
+import { AnimatePresence, motion } from "framer-motion"
+import { useEffect, useState } from "react"
+
+import { Filter } from "./components"
+import { MovieSimpleView } from "./domains"
 
 function App() {
+  const [popular, setPopular] = useState([])
+  const [filtered, setFiltered] = useState([])
+  const [activeGenre, setActiveGenre] = useState(0)
+
+  useEffect(() => {
+    fetchPopular()
+  }, [])
+
+  const fetchPopular = async () => {
+    const data = await fetch(
+      "https://api.themoviedb.org/3/movie/popular?api_key=4972d99e169ba578eb098da6f9a15d72"
+    )
+    const movies = await data.json()
+    setPopular(movies.results)
+    setFiltered(movies.results)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <Filter
+        popular={popular}
+        setFiltered={setFiltered}
+        activeGenre={activeGenre}
+        setActiveGenre={setActiveGenre}
+      />
+      <motion.div layout className="popular-movies">
+        <AnimatePresence>
+          {filtered?.map(movie => (
+            <MovieSimpleView key={`movie - ${movie.id}`} movie={movie} />
+          ))}
+        </AnimatePresence>
+      </motion.div>
+    </>
+  )
 }
 
-export default App;
+export default App
