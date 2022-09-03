@@ -3,8 +3,6 @@ import { motion } from "framer-motion"
 const MovieSimpleView = props => {
   const { movie } = props
 
-  console.log(movie.backdrop)
-
   return (
     <motion.div
       animate={{ opacity: 1 }}
